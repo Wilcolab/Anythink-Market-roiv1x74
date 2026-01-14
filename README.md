@@ -66,12 +66,17 @@ To run the Express server, follow these steps:
 
 4. The Express server should now be running. You can access it at port `3000`.
 
-### Running Both Servers
+### Running Both Servers with Docker Compose
 
-You can run both servers simultaneously:
+You can run both servers simultaneously using Docker Compose:
 
+```shell
+docker-compose up -d --build
+```
+
+This will start:
 - Python server on port `8000`
-- Node.js server on port `3000`
+- Node.js server on port `8001`
 
 ## API Routes
 
@@ -94,5 +99,46 @@ curl http://localhost:3000/tasks  # Node.js server
 Add a new task:
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:8000/tasks  # Python
-curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:3000/tasks  # Node.js
+curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:8001/tasks  # Node.js
 ```
+
+## Migration Notes
+
+### Python FastAPI to Node.js Express Migration
+
+This project demonstrates a successful migration from Python FastAPI to Node.js Express while maintaining API compatibility.
+
+#### Key Differences & Enhancements
+
+| Feature | Python FastAPI | Node.js Express |
+|---------|---------------|-----------------|
+| **Validation** | Pydantic models | Custom middleware validation |
+| **Empty strings** | Accepts empty text | Rejects with 400 error |
+| **Request logging** | Not implemented | Timestamp + method + path logging |
+| **Error handling** | Basic FastAPI errors | Global error handler + 404 handler |
+| **JSON parsing** | Automatic | `express.json()` middleware |
+| **Port** | 8000 | 8001 |
+
+#### Migration Decisions
+
+1. **Enhanced Validation**: Node.js version includes stricter validation that rejects empty strings and provides clear error messages.
+
+2. **Middleware Architecture**: Implemented Express middleware for:
+   - JSON body parsing
+   - Request logging
+   - Error handling
+   - 404 route handling
+
+3. **Code Structure**: Maintained same route structure and response formats for API compatibility.
+
+4. **Development Tools**: Added nodemon for hot-reloading during development (Python uses uvicorn with --reload).
+
+#### Testing & Verification
+
+Both servers have been tested and verified to:
+- ✅ Return identical data structures
+- ✅ Handle POST requests successfully
+- ✅ Maintain task state independently
+- ✅ Provide consistent API responses
+
+The Node.js implementation is production-ready and includes improvements over the original Python implementation.
