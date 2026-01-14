@@ -2,6 +2,25 @@
 
 This project contains both a Python FastAPI server and a Node.js Express server for managing a task list. Both servers provide identical functionality with the same API routes.
 
+## Migration Overview
+
+This repository demonstrates a successful migration from Python FastAPI to Node.js Express, showcasing how to modernize your tech stack while maintaining API compatibility. The migration was completed using GitHub Copilot to ensure code quality and consistency.
+
+### Why We Migrated
+
+- **Unified Technology Stack**: Consolidating to JavaScript/Node.js for full-stack development
+- **Express 5.x Features**: Leveraging the latest Express framework with improved performance and async/await support
+- **Modern Node.js**: Using Node.js 18+ with enhanced features and long-term support
+- **Docker Support**: Both servers are containerized for easy deployment and scalability
+
+### Migration Highlights
+
+- ✅ All API endpoints migrated with identical functionality
+- ✅ Request validation and error handling implemented
+- ✅ Logging middleware for request tracking
+- ✅ Docker and docker-compose configuration
+- ✅ Comprehensive documentation and examples
+
 ## Project Structure
 
 The project has the following files and directories:
@@ -16,11 +35,17 @@ The project has the following files and directories:
 
 - `python-server/Dockerfile`: This file is used to build a Docker image for the FastAPI server. It specifies the base image, copies the source code into the image, installs the dependencies, and sets the command to run the server.
 
-### Node.js Server
+### Node.js Server (Migrated)
 
-- `node-server/index.js`: This file contains the implementation of the Express server with the same routes as the Python server. It handles adding a task to a list and retrieving the list.
+- `node-server/index.js`: This file contains the Express 5.x server implementation, migrated from the Python FastAPI server. It includes:
+  - Request validation middleware
+  - Error handling middleware
+  - Request logging
+  - All original API endpoints with identical functionality
 
-- `node-server/package.json`: This file lists the dependencies required for the Express server (Express 5.x).
+- `node-server/package.json`: Dependencies configuration featuring Express 5.2.1 and development tools like nodemon
+
+- `node-server/Dockerfile`: Docker configuration using Node.js 18 (required for Express 5.x)
 
 ### Shared
 
@@ -66,12 +91,19 @@ To run the Express server, follow these steps:
 
 4. The Express server should now be running. You can access it at port `3000`.
 
-### Running Both Servers
+### Running Both Servers with Docker Compose
 
-You can run both servers simultaneously:
+You can run both servers simultaneously using Docker Compose:
 
-- Python server on port `8000`
-- Node.js server on port `3000`
+```shell
+docker compose up
+```
+
+This will start:
+- Python FastAPI server on port `8000`
+- Node.js Express server on port `8001` (mapped from container port 8001)
+
+Both services will have hot-reload enabled for development.
 
 ## API Routes
 
@@ -94,5 +126,54 @@ curl http://localhost:3000/tasks  # Node.js server
 Add a new task:
 ```shell
 curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:8000/tasks  # Python
-curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:3000/tasks  # Node.js
+curl -X POST -H "Content-Type: application/json" -d '{"text": "New task"}' http://localhost:8001/tasks  # Node.js
 ```
+
+## Technology Stack
+
+### Python Server
+- **Framework**: FastAPI
+- **Runtime**: Python 3.9
+- **Server**: Uvicorn
+
+### Node.js Server
+- **Framework**: Express 5.2.1
+- **Runtime**: Node.js 18+
+- **Package Manager**: npm/yarn
+- **Dev Tools**: nodemon for hot-reload
+
+## Development
+
+### Prerequisites
+- Docker and Docker Compose
+- Node.js 18+ (for local Node.js development)
+- Python 3.9+ (for local Python development)
+
+### Environment Setup
+
+For Node.js development:
+```shell
+cd node-server
+npm install
+npm start
+```
+
+For Python development:
+```shell
+cd python-server
+pip install -r requirements.txt
+uvicorn src.main:app --reload --port 8000
+```
+
+## Contributing
+
+This project was migrated using GitHub Copilot, demonstrating best practices for:
+- API endpoint migration
+- Request/response handling
+- Error handling and validation
+- Code documentation
+- Docker containerization
+
+## License
+
+ISC
